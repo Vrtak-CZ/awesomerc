@@ -2,7 +2,7 @@ local M = { settings = { color = '#dcdccc', battery = 'C23B', warning = { color 
 -- you can override settings in rc.lua
 
 function M.get_info()
-  spacer = ""
+  spacer = " "
   local fcur = io.open("/sys/class/power_supply/" .. M.settings.battery .. "/charge_now")
   local fcap = io.open("/sys/class/power_supply/" .. M.settings.battery .. "/charge_full")
   local fsta = io.open("/sys/class/power_supply/" .. M.settings.battery .. "/status")
