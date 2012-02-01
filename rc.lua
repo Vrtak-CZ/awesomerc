@@ -111,6 +111,17 @@ batterywidget.widget.text = " ?? "
 batterywidget.timer:add_signal("timeout", function() batterywidget.widget.text = battery.get_info() end)
 batterywidget.timer:start()
 
+-- wifi
+wifi = require('wifi')
+
+wifiwidget = {
+  widget = widget({type = "textbox", name = "wifiwidget", align = "right" }),
+  timer = timer({ timeout = 5 })
+}
+wifiwidget.widget.text = " ?? "
+wifiwidget.timer:add_signal("timeout", function() wifiwidget.widget.text = wifi("wlan0") end)
+wifiwidget.timer:start()
+
 -- {{{ Wibox
 -- Create a textclock widget
 mytextclock = awful.widget.textclock({ align = "right" }, " %b %d, %H:%M ")
@@ -211,6 +222,8 @@ for s = 1, screen.count() do
       widget_sep,
       batterywidget.widget,
       widget_sep,
+      wifiwidget.widget,
+      widget_sep,
       padding_right,
       gmailwidget,
       layout = awful.widget.layout.horizontal.rightleft
@@ -230,9 +243,9 @@ root.buttons(awful.util.table.join(awful.button({}, 3, function() mymainmenu:tog
 
 
 -- {{{ Key bindings (use xev)
-globalkeys = awful.util.table.join(awful.key({ modkey, }, "Left", awful.tag.viewprev),
+globalkeys = awful.util.table.join(awful.key({ ctrlkey, altkey, }, "Left", awful.tag.viewprev),
   awful.key({ modkey, }, ",", awful.tag.viewprev),
-  awful.key({ modkey, }, "Right", awful.tag.viewnext),
+  awful.key({ ctrlkey, altkey }, "Right", awful.tag.viewnext),
   awful.key({ modkey, }, ".", awful.tag.viewnext),
   awful.key({ modkey, altkey }, "space", awful.tag.history.restore),
   awful.key({ modkey, }, "Up", awful.tag.history.restore),
