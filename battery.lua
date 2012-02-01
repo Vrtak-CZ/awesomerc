@@ -1,10 +1,10 @@
-local M = { settings = { color = '#dcdccc', battery = 'BAT0', warning = { color = '#fecf35', level = 31 }, critical = { color = 'red', level = 16 } } }
+local M = { settings = { color = '#dcdccc', battery = 'C23B', warning = { color = '#fecf35', level = 31 }, critical = { color = 'red', level = 16 } } }
 -- you can override settings in rc.lua
 
 function M.get_info()
   spacer = ""
-  local fcur = io.open("/sys/class/power_supply/" .. M.settings.battery .. "/energy_now")
-  local fcap = io.open("/sys/class/power_supply/" .. M.settings.battery .. "/energy_full")
+  local fcur = io.open("/sys/class/power_supply/" .. M.settings.battery .. "/charge_now")
+  local fcap = io.open("/sys/class/power_supply/" .. M.settings.battery .. "/charge_full")
   local fsta = io.open("/sys/class/power_supply/" .. M.settings.battery .. "/status")
   local cur = fcur:read()
   local cap = fcap:read()

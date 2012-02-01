@@ -7,12 +7,9 @@ require("beautiful")
 -- Notification library
 require("naughty")
 
--- Load Debian menu entries
-require("debian.menu")
-
 -- {{{ Variable definitions
 -- Themes define colours, icons, and wallpapers
-beautiful.init("/home/starenka/.config/awesome/themes/starenka/theme.lua")
+beautiful.init("/home/vrtak-cz/.config/awesome/themes/starenka/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
 terminal = "terminator"
@@ -50,9 +47,9 @@ layouts =
 -- {{{ Tags
 -- Define a tag table which hold all screen tags.
 tags = {
-  names = { 'terms', 'dev', 'dev:www', '[www]', '#', 'd{-_-}b', '/tmp', 'μdev' },
+  names = { 'www', 'dev', 'tmp' },
   layout = {
-    layouts[1], layouts[1], layouts[1], layouts[1], layouts[6], layouts[1], layouts[1], layouts[1]
+    layouts[1], layouts[1], layouts[1]
   }
 }
 
@@ -73,8 +70,8 @@ myawesomemenu = {
 mymainmenu = awful.menu({
   items = {
     { "awesome", myawesomemenu, beautiful.awesome_icon },
-    { "Debian", debian.menu.Debian_menu.Debian },
-    { "open terminal", terminal }
+    { "browser", "google-chrome" },
+    { "terminal", terminal }
   }
 })
 
@@ -87,7 +84,7 @@ mylauncher = awful.widget.launcher({
 -- Keyboard layout switching
 kbdcfg = {
   cmd = "setxkbmap",
-  layout = { "us", "cz -variant qwerty" },
+  layout = { "us", "cz" },
   current = 1,
   widget = widget({ type = "textbox", align = "right" })
 }
@@ -100,11 +97,6 @@ end
 kbdcfg.widget.text = " " .. kbdcfg.layout[kbdcfg.current] .. " "
 -- Mouse bindings
 kbdcfg.widget:buttons(awful.util.table.join(awful.button({}, 1, function() kbdcfg.switch() end)))
-
--- Gmail widget
--- cat ~/.netrc: machine mail.google.com login johndoe@gmail.com password secretpass
-awful.widget.gmail = require('awful.widget.gmail')
-gmailwidget = awful.widget.gmail.new()
 
 -- battery
 battery = require('battery')
@@ -125,10 +117,6 @@ mytextclock = awful.widget.textclock({ align = "right" }, " %b %d, %H:%M ")
 
 -- Create a systray
 mysystray = widget({ type = "systray" })
-
--- calendar
-require('awful.widget.calendar2')
-calendar2.addCalendarToWidget(mytextclock)
 
 -- Create a wibox for each screen and add it
 mywibox = {}
@@ -298,14 +286,7 @@ globalkeys = awful.util.table.join(awful.key({ modkey, }, "Left", awful.tag.view
   -- volume
   awful.key({}, "XF86AudioRaiseVolume", function() awful.util.spawn("amixer -c 0 set Master 2+ unmute") end),
   awful.key({}, "XF86AudioLowerVolume", function() awful.util.spawn("amixer -c 0 set Master 2- unmute") end),
-  -- awful.key({}, "XF86AudioLowerVolume", function() awful.util.spawn("amixer -c 0 set Master nmute") end),
-
-  -- clementine
-  awful.key({}, "XF86AudioPrev", function() awful.util.spawn("qdbus org.mpris.clementine /Player org.freedesktop.MediaPlayer.Prev") end),
-  awful.key({}, "XF86AudioNext", function() awful.util.spawn("qdbus org.mpris.clementine /Player org.freedesktop.MediaPlayer.Next") end),
-  awful.key({}, "XF86AudioPlay", function() awful.util.spawn("qdbus org.mpris.clementine /Player org.freedesktop.MediaPlayer.Play") end),
-  awful.key({}, "XF86AudioStop", function() awful.util.spawn("qdbus org.mpris.clementine /Player org.freedesktop.MediaPlayer.Pause") end),
-  --  awful.key({}, "XF86AudioStop", function() awful.util.spawn("qdbus org.mpris.clementine /Player org.freedesktop.MediaPlayer.Stop") end),
+  awful.key({}, "XF86AudioMute", function() awful.util.spawn("amixer set Master toggle") end),
 
   -- misc
   awful.key({ altkey, }, "space", function() mypromptbox[mouse.screen]:run() end), --prompt
@@ -476,11 +457,9 @@ client.add_signal("focus", function(c) c.border_color = beautiful.border_focus e
 client.add_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
 
-run_once = require('run_once')
-run_once.run_once("terminator")
-run_once.run_once("ktorrent")
-run_once.run_once("/home/starenka/.dropbox-dist/dropboxd")
-awful.util.spawn("rm -rf /var/tmp/kdecache-starenka; qdbus org.kde.kded /kded loadModule powerdevil")
+-- run_once = require('run_once')
+-- run_once.run_once("terminator")
+-- run_once.run_once("/home/starenka/.dropbox-dist/dropboxd")
 -- Use the second argument, if the programm you wanna start, 
 -- differs from the what you want to search.
 -- run_once("redshift", "nice -n19 redshift -l 51:14 -t 5700:4500")
