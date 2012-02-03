@@ -47,7 +47,7 @@ layouts =
 -- {{{ Tags
 -- Define a tag table which hold all screen tags.
 tags = {
-  names = { 'term', 'dev', 'www', 'media', 'xmpp', 'monit', 'tmp' },
+  names = { 'term', 'www', 'dev', 'media', 'xmpp', 'monit', 'tmp' },
   layout = {
     layouts[9], layouts[9], layouts[9], layouts[9], layouts[9], layouts[9], layouts[9]
   }
@@ -206,7 +206,6 @@ for s = 1, screen.count() do
   -- Add widgets to the wibox - order matters
   mywibox[s].widgets = {
     {
-      mylauncher,
       padding_left,
       mypromptbox[s],
       mytaglist[s],
@@ -215,7 +214,7 @@ for s = 1, screen.count() do
       layout = awful.widget.layout.horizontal.leftright
     },
     {
-      mylayoutbox[s],
+--      mylayoutbox[s],
       mytextclock,
       widget_sep,
       kbdcfg.widget,
@@ -225,7 +224,6 @@ for s = 1, screen.count() do
       wifiwidget.widget,
       widget_sep,
       padding_right,
-      gmailwidget,
       layout = awful.widget.layout.horizontal.rightleft
     },
     s == 1 and mysystray or nil,
@@ -244,22 +242,12 @@ root.buttons(awful.util.table.join(awful.button({}, 3, function() mymainmenu:tog
 
 -- {{{ Key bindings (use xev)
 globalkeys = awful.util.table.join(awful.key({ ctrlkey, altkey, }, "Left", awful.tag.viewprev),
-  awful.key({ modkey, }, ",", awful.tag.viewprev),
   awful.key({ ctrlkey, altkey }, "Right", awful.tag.viewnext),
-  awful.key({ modkey, }, ".", awful.tag.viewnext),
-  awful.key({ modkey, altkey }, "space", awful.tag.history.restore),
-  awful.key({ modkey, }, "Up", awful.tag.history.restore),
-  awful.key({ modkey, }, "Down", awful.tag.history.restore),
 
   awful.key({ altkey, }, "Tab", function () awful.client.focus.byidx(1) if client.focus then client.focus:raise() end end),
   awful.key({ altkey, shiftkey }, "Tab", function () awful.client.focus.byidx(-1) if client.focus then client.focus:raise() end end),
-  awful.key({ modkey, }, "w", function() mymainmenu:show({ keygrabber = true }) end),
 
   -- Layout manipulation
-  awful.key({ modkey, shiftkey }, "j", function() awful.client.swap.byidx(1) end),
-  awful.key({ modkey, shiftkey }, "k", function() awful.client.swap.byidx(-1) end),
-  awful.key({ modkey, ctrlkey }, "j", function() awful.screen.focus_relative(1) end),
-  awful.key({ modkey, ctrlkey }, "k", function() awful.screen.focus_relative(-1) end),
   awful.key({ modkey, }, "u", awful.client.urgent.jumpto),
   awful.key({ modkey, }, "Tab",
     function()
@@ -274,25 +262,7 @@ globalkeys = awful.util.table.join(awful.key({ ctrlkey, altkey, }, "Left", awful
   awful.key({ modkey, ctrlkey }, "r", awesome.restart),
   awful.key({ modkey, shiftkey }, "q", awesome.quit),
 
-  awful.key({ modkey, }, "l", function() awful.tag.incmwfact(0.05) end),
-  awful.key({ modkey, }, "h", function() awful.tag.incmwfact(-0.05) end),
-  awful.key({ modkey, shiftkey }, "h", function() awful.tag.incnmaster(1) end),
-  awful.key({ modkey, shiftkey }, "l", function() awful.tag.incnmaster(-1) end),
-  awful.key({ modkey, ctrlkey }, "h", function() awful.tag.incncol(1) end),
-  awful.key({ modkey, ctrlkey }, "l", function() awful.tag.incncol(-1) end),
-  awful.key({ modkey, }, "space", function() awful.layout.inc(layouts, 1) end),
-  awful.key({ modkey, shiftkey }, "space", function() awful.layout.inc(layouts, -1) end),
-
   awful.key({ modkey, ctrlkey }, "n", awful.client.restore),
-
-  -- shortcuts for tags
-  awful.key({ ctrlkey, altkey }, "space", function() awful.tag.viewonly(tags[mouse.screen][1]) end),
-  awful.key({ modkey }, "b", function() awful.tag.viewonly(tags[mouse.screen][4]) end), --browser [www]
-  awful.key({ modkey }, "d", function() awful.tag.viewonly(tags[mouse.screen][2]) end), --dev
-  awful.key({ modkey }, "v", function() awful.tag.viewonly(tags[mouse.screen][3]) end), --dev:www
-  awful.key({ modkey }, "c", function() awful.tag.viewonly(tags[mouse.screen][5]) end), --irc/im
-  awful.key({ modkey }, "/", function() awful.tag.viewonly(tags[mouse.screen][1]) end), --terminals
-  awful.key({ modkey }, "u", function() awful.tag.viewonly(tags[mouse.screen][8]) end), --udev
 
   awful.key({ ctrlkey, altkey }, "k", function() kbdcfg.switch() end),
 
@@ -303,17 +273,8 @@ globalkeys = awful.util.table.join(awful.key({ ctrlkey, altkey, }, "Left", awful
 
   -- misc
   awful.key({ altkey, }, "space", function() mypromptbox[mouse.screen]:run() end), --prompt
-  awful.key({}, "Print", function() awful.util.spawn("ksnapshot") end), -- screenshot
-  awful.key({ ctrlkey }, "Escape", function() awful.util.spawn("ksysguard") end), -- "ktop"
-
-  --
---  awful.key({ modkey }, "x",
---    function()
---      awful.prompt.run({ prompt = "Run Lua code: " },
---        mypromptbox[mouse.screen].widget,
---        awful.util.eval, nil,
---        awful.util.getdir("cache") .. "/history_eval")
---    end))
+  awful.key({}, "Print", function() awful.util.spawn("scrot") end), -- screenshot
+  awful.key({ ctrlkey }, "Escape", function() awful.util.spawn("htop") end), -- "htop"
 
   awful.key({ modkey }, "x", function() awful.util.spawn("terminator -x ipython") end)) -- spawn term w/ python
 
@@ -321,15 +282,6 @@ clientkeys = awful.util.table.join(awful.key({ modkey, }, "f", function(c) c.ful
   awful.key({ modkey, shiftkey }, "c", function(c) c:kill() end),
   awful.key({ modkey, ctrlkey }, "space", awful.client.floating.toggle),
   awful.key({ modkey, ctrlkey }, "Return", function(c) c:swap(awful.client.getmaster()) end),
-  awful.key({ modkey, }, "o", awful.client.movetoscreen),
-  awful.key({ modkey, shiftkey }, "r", function(c) c:redraw() end),
-  awful.key({ modkey, }, "t", function(c) c.ontop = not c.ontop end),
-  awful.key({ modkey, }, "n",
-    function(c)
-    -- The client currently has the input focus, so it cannot be
-    -- minimized, since minimized clients can't have the focus.
-      c.minimized = true
-    end),
   awful.key({ modkey, }, "m",
     function(c)
       c.maximized_horizontal = not c.maximized_horizontal
@@ -397,45 +349,21 @@ awful.rules.rules = {
     }
   },
   {
-    rule = { class = "MPlayer" },
-    properties = { floating = true }
-  },
-  {
-    rule = { class = "pinentry" },
-    properties = { floating = true }
-  },
-  {
     rule = { class = "gimp" },
     properties = { floating = true }
   },
 
   -- default apps -> tags
   -- xprop | grep WM_CLAS
-  { rule = { class = "OperaNext" }, properties = { tag = tags[1][4] }, maximized_vertical = true, maximized_horizontal = true, },
-  { rule = { class = "Opera" }, properties = { tag = tags[1][4] }, maximized_vertical = true, maximized_horizontal = true, },
-  { rule = { class = "Iceweasel" }, properties = { tag = tags[1][3] }, maximized_vertical = true, maximized_horizontal = true, },
-  { rule = { class = "Google-chrome" }, properties = { tag = tags[1][3] }, maximized_vertical = true, maximized_horizontal = true, },
-  { rule = { class = "Wireshark" }, properties = { tag = tags[1][3] } },
-  { rule = { class = "Krusader" }, properties = { tag = tags[1][7] } },
+  { rule = { class = "OperaNext" }, properties = { tag = tags[1][2] }, maximized_vertical = true, maximized_horizontal = true, },
+  { rule = { class = "Opera" }, properties = { tag = tags[1][2] }, maximized_vertical = true, maximized_horizontal = true, },
+  { rule = { class = "Google-chrome" }, properties = { tag = tags[1][2] }, maximized_vertical = true, maximized_horizontal = true, },
   { rule = { class = "Pidgin" }, properties = { tag = tags[1][5] } },
-  { rule = { class = "Konversation" }, properties = { tag = tags[1][5] } },
-  { rule = { class = "Kate" }, properties = { tag = tags[1][8] }, maximized_vertical = true, maximized_horizontal = true, },
-  { rule = { class = "Sublime_text" }, properties = { tag = tags[1][8] }, maximized_vertical = true, maximized_horizontal = true, },
-  { rule = { class = "Sublime" }, properties = { tag = tags[1][8] }, maximized_vertical = true, maximized_horizontal = true, },
-  { rule = { class = "Clementine" }, properties = { tag = tags[1][6] } },
-  { rule = { class = "Audacity" }, properties = { tag = tags[1][6] } },
-  { rule = { class = "Vlc" }, properties = { tag = tags[1][6] } },
-  { rule = { class = "Gvim" }, properties = { tag = tags[1][2] } },
+  { rule = { class = "Conversation" }, properties = { tag = tags[1][5] } },
+  { rule = { class = "Sublime_text" }, properties = { tag = tags[1][3] }, maximized_vertical = true, maximized_horizontal = true, },
+  { rule = { class = "Sublime" }, properties = { tag = tags[1][3] }, maximized_vertical = true, maximized_horizontal = true, },
+  { rule = { class = "Vlc" }, properties = { tag = tags[1][4] } },
   { rule = { class = "jd-Main" }, properties = { tag = tags[1][7] } },
-  { rule = { class = "Okular" }, properties = { tag = tags[1][7] }, maximized_vertical = true, maximized_horizontal = true, },
-  { rule = { class = "java-lang-Thread" }, properties = { tag = tags[1][2] }, maximized_vertical = true, maximized_horizontal = true, }, --pycharm 1.x
-  { rule = { class = "jetbrains-pycharm" }, properties = { tag = tags[1][2] } },
-  { rule = { class = "sun-awt-X11-XFramePeer" }, properties = { tag = tags[1][2] } },
-  { rule = { class = "Keepassx" }, properties = { tag = tags[1][4] }, maximized_vertical = false, maximized_horizontal = false, },
-  { rule = { class = "VirtualBox" }, properties = { tag = tags[1][7] } },
-  { rule = { class = "vox" }, properties = { tag = tags[1][7] } },
-  { rule = { class = "Ktorrent" }, properties = { tag = tags[1][7] }, maximized_vertical = true, maximized_horizontal = true, },
-  { rule = { class = "Nicotine" }, properties = { tag = tags[1][7] }, maximized_vertical = true, maximized_horizontal = true, },
 }
 -- }}}
 
